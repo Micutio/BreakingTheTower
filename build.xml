@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Breaking the Tower" default="build" basedir=".">
+    <!-- =================================================================== -->
+    <!-- Build                                                               -->
+    <!-- =================================================================== -->
+	<target name="build" depends="clean,compile,dist" description="Performs a clean build of the source code and deploys the application"/>
+	<!-- ================================================================= -->
+	<!-- Clean                                                             -->
+	<!-- ================================================================= -->
+	<target name="clean" description="Deletes the .class files">
+	    <delete failonerror="false">
+	        <fileset dir="bin" includes="**/*.class" />
+	    </delete>
+	</target>
+	<!-- ================================================================= -->
+	<!-- Compile                                                           -->
+	<!-- ================================================================= -->
+	<target name="compile" description="Compiles the source code">
+		<javac includeantruntime="false" srcdir="src" destdir="bin" debug="on" source="1.6" target="1.6">
+		    <include name="**/*.java"/>
+		</javac>
+	</target>
+	<!-- ================================================================= -->
+	<!-- Dist                                                              -->
+	<!-- ================================================================= -->
+	<target name="dist" depends="compile" description="Creates the JAR file">
+		<jar destfile="Tower.jar" basedir="bin" includes="com/mojang/tower/*.class,*.gif" compress="true" update="false">
+			<manifest>
+			    <attribute name="Application-Name" value="Breaking the Tower" />
+			    <attribute name="Main-Class" value="com.mojang.tower.TowerComponent" />
+			</manifest>
+		</jar>
+	</target>
+</project>
