@@ -1,5 +1,5 @@
-Note: the creator of the game is Markus Persson, I just published it on GitHub 
-so this jewel won't be lost.
+Note: the creator of the game is Markus Persson, Alexey Petrushin just published it on GitHub 
+so this jewel won't be lost, I fixed one bug and I added an Ant script (even though it violates the very first clause of the license, sorry).
 
 Breaking the Tower
 ==================
