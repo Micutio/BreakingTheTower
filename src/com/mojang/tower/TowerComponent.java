@@ -6,7 +6,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TowerComponent extends Canvas implements Runnable, MouseListener, MouseMotionListener
 {
@@ -36,7 +35,6 @@ public class TowerComponent extends Canvas implements Runnable, MouseListener, M
     private int selectedHouseType = 0;
     private boolean titleScreen = true, won = false;
     private int gameTime = 0, winScore = 0, wonTime;
-    private final ConcurrentLinkedQueue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
     public TowerComponent(int width, int height)
     {
@@ -107,30 +105,20 @@ public class TowerComponent extends Canvas implements Runnable, MouseListener, M
     public void run()
     {
         init();
-        float lastTime = (System.nanoTime() / 1000000) / 1000.0f;
+        double lastTime = (System.nanoTime() / 1000000L) / 1000.0d;
         running = true;
 
         double msPerTick = 1.0 / TICKS_PER_SECOND;
 
         while (running)
         {
-            while(true) 
+        	synchronized(this)
             {
-            	final Runnable runnable = queue.poll();
-            	if (runnable == null) 
-            	{
-            		break;
-            	}
-            	else
-            	{
-            		runnable.run();
-            	}
-            }
-            {
-                float now = (System.nanoTime() / 1000000) / 1000.0f;
+                double now = (System.nanoTime() / 1000000L) / 1000.0d;
                 int frameTicks = 0;
                 while (now - lastTime > msPerTick)
                 {
+                	System.out.println("now - lastTime = " + (now - lastTime));
                     if (!paused && frameTicks++ < MAX_TICKS_PER_FRAME) tick();
 
                     lastTime += msPerTick;
@@ -424,8 +412,7 @@ public class TowerComponent extends Canvas implements Runnable, MouseListener, M
 
     public void mousePressed(final MouseEvent me)
     {
-    	queue.offer(new Runnable() {
-    		public void run() 
+    	synchronized(this)
         {
             if (me.getX()>=width*2-40 && me.getY()>=height*2-40 && me.getX()<=width*2-40+32 && me.getY()<=height*2-40+32)
             {
@@ -490,7 +477,6 @@ public class TowerComponent extends Canvas implements Runnable, MouseListener, M
                 scrolling = true;
             }
         }
-    	});
     }
 
     public void mouseReleased(MouseEvent me)
@@ -516,7 +502,7 @@ public class TowerComponent extends Canvas implements Runnable, MouseListener, M
 
     public static void main(String[] args)
     {
-        final TowerComponent tower = new TowerComponent(512, 320);
+    	final TowerComponent tower = new TowerComponent(512, 320);
 
         Frame frame = new Frame("Breaking the Tower");
         frame.add(tower);
