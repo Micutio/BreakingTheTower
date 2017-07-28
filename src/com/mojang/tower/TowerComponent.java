@@ -118,8 +118,7 @@ public class TowerComponent extends Canvas implements Runnable, MouseListener, M
                 int frameTicks = 0;
                 while (now - lastTime > msPerTick)
                 {
-                	System.out.println("now - lastTime = " + (now - lastTime));
-                    if (!paused && frameTicks++ < MAX_TICKS_PER_FRAME) tick();
+                	if (!paused && frameTicks++ < MAX_TICKS_PER_FRAME) tick();
 
                     lastTime += msPerTick;
                 }
